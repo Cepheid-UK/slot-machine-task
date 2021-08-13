@@ -4,6 +4,7 @@ namespace SlotMachine.StateMachine
 {
     public class StartState : IState
     {
+        // Default starting state - prompts the user to input a Balance and validates
         public StartState(Game activeGame)
         {
             game = activeGame;
@@ -15,12 +16,12 @@ namespace SlotMachine.StateMachine
             Console.WriteLine("Please deposit money you would like to play with:");
             string response = Console.ReadLine();
 
-            bool isInt = int.TryParse(response, out int money);
+            bool isANumber = decimal.TryParse(response, out decimal money);
 
-            if (isInt)
+            if (isANumber && money > 0)
             {
                 game.wallet.DepositMoney(money);
-                game.fsm.SetState("stake");
+                game.fsm.SetState("Stake");
             }
             else
             {

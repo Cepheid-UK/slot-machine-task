@@ -4,12 +4,13 @@ namespace SlotMachine.StateMachine
 {
     public class FiniteStateMachine
     {
+        // Handles the definition and changing of state
         public FiniteStateMachine(Game game)
         {
             states = new Dictionary<string, IState>();
 
             AddState("start", new StartState(game));
-            AddState("stake", new StakeState(game));
+            AddState("Stake", new StakeState(game));
             AddState("play", new PlayState(game));
             AddState("lost", new LoseState(game));
         }

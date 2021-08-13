@@ -4,6 +4,7 @@ namespace SlotMachine.StateMachine
 {
     public class StakeState : IState
     {
+        // Handles the Stake input and validation
         public StakeState(Game activeGame)
         {
             game = activeGame;
@@ -14,25 +15,28 @@ namespace SlotMachine.StateMachine
             Console.WriteLine("\r\nEnter Stake Amount:");
             var response = Console.ReadLine();
 
-            bool isInt = int.TryParse(response, out int money);
+            bool isANumber = decimal.TryParse(response, out decimal stake);
 
-            if (isInt)
+            if (isANumber)
             {
-                if (game.wallet.CanAffordBet(money))
+                if (stake > 0 && game.wallet.CanAffordBet(stake))
                 {
-                    game.wallet.StakeMoney(money);
+                    // player has entered a valid Stake
+                    game.wallet.StakeMoney(stake);
                     game.fsm.SetState("play");
                 }
                 else
                 {
-                    Console.WriteLine("\r\nInsufficient balance");
-                    game.fsm.SetState("stake");
+                    // player tried to Stake too much
+                    Console.WriteLine("\r\nInsufficient Balance");
+                    game.fsm.SetState("Stake");                
                 }
             }
             else
             {
+                // player entered a character that cannot be parsed as a decimal
                 Console.WriteLine("\r\nNot an acceptable input, please enter a number");
-                game.fsm.SetState("stake");
+                game.fsm.SetState("Stake");
             }
         }
     }
