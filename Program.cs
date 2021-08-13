@@ -1,4 +1,5 @@
 ﻿using System;
+using SlotMachine.StateMachine;
 
 namespace SlotMachine
 {
@@ -6,7 +7,7 @@ namespace SlotMachine
     {
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            new Game();
         }
     }
 }
