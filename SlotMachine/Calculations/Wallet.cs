@@ -38,7 +38,7 @@ namespace SlotMachine.Calculations
         public void StakeMoney(decimal stake)
         {
             Stake = decimal.Round(stake,2);
-            Balance = (Balance - Stake);
+            Balance -= Stake;
         }
 
         public decimal GetStake()
@@ -46,9 +46,19 @@ namespace SlotMachine.Calculations
             return Stake;
         }
 
+        public void BetResult(decimal result)
+        {
+            if (result > 0)
+            {
+                Console.WriteLine("\r\nYou have won: {0}", result);
+            }
+            Balance += result;
+            Stake = 0;
+        }
+
         public void DisplayBalance()
         {
-            Console.WriteLine("\r\nCurrent balance is: {0}", Balance.ToString());
+            Console.WriteLine("Current balance is: {0}", Balance.ToString());
         }
     }
 }

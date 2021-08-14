@@ -12,7 +12,7 @@ namespace SlotMachine.Calculations
             var cols = slots.GetLength(0);
             var rows = slots.GetLength(1);
 
-            decimal winnings = 0;
+            decimal totalWinningsCoefficient = 0;
 
             for (var i=0; i<cols; i++)
             {
@@ -23,13 +23,13 @@ namespace SlotMachine.Calculations
                     symbolRow.Add(slots[i, j]);
                 }
 
-                winnings = winnings + GetWinningsForRow(symbolRow, game);
+                totalWinningsCoefficient += GetCoefficientForRow(symbolRow, game);
             }
 
-            return (winnings - game.wallet.GetStake());
+            return totalWinningsCoefficient * game.wallet.GetStake();
         }
 
-        public static decimal GetWinningsForRow(List<ESymbol> symbolRow, Game game)
+        public static decimal GetCoefficientForRow(List<ESymbol> symbolRow, Game game)
         {
             var dictionary = game.slotsGenerator.GetSymbolsDictionary();
 
@@ -63,12 +63,6 @@ namespace SlotMachine.Calculations
                 }
                 consecutiveSymbols++;
             }
-
-            // TODO: resolve winnings and add to balance
-
-            Console.WriteLine("\r\nConsecutive Symbols:" + consecutiveSymbols);
-            var winnings = consecutiveSymbols * dictionary[winningSymbol].Coefficient;
-            Console.WriteLine("\r\nWinnings:\r\n"+ winnings);
 
             return listWithoutWildcards.Count * dictionary[winningSymbol].Coefficient;
         }

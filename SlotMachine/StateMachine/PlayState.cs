@@ -15,8 +15,7 @@ namespace SlotMachine.StateMachine
         {
             var slots = game.slotsGenerator.GenerateSlots();
             var winningsLessStake = BetCalculator.CalculateWinnings(slots, game);
-            
-            
+            game.wallet.BetResult(winningsLessStake);
             game.wallet.DisplayBalance();
 
             // establish effective way to store the data

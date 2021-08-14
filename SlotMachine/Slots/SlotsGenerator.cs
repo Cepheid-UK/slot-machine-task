@@ -27,7 +27,7 @@ namespace SlotMachine.Slots
             {
                 <= 0.05 => ESymbol.Wildcard,
                 < 0.2 => ESymbol.Pineapple,
-                < 0.65 => ESymbol.Banana,
+                < 0.55 => ESymbol.Banana,
                 _ => ESymbol.Apple,
             };
         }
@@ -36,6 +36,7 @@ namespace SlotMachine.Slots
         {
             // Generates the symbols on the slots and prints the lines
             // Supports any sized 2D slot machine
+            Console.WriteLine("\r\n");
 
             for(var i=0; i<SlotDimensions[0]; i++)
             {
