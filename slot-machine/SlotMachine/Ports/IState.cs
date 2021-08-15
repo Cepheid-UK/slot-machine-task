@@ -1,5 +1,3 @@
-using SlotMachine.StateMachine;
-
 namespace SlotMachine.Ports
 {
     public interface IState

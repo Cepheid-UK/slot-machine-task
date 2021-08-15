@@ -1,5 +1,4 @@
-﻿using System;
-using SlotMachine.Calculations;
+﻿using SlotMachine.Calculations;
 using SlotMachine.Ports;
 
 namespace SlotMachine.StateMachine

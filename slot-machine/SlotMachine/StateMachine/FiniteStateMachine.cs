@@ -41,14 +41,6 @@ namespace SlotMachine.StateMachine
             }
         }
 
-        public void RunStateMachine()
-        {
-            while(true)
-            {
-
-            }
-        }
-
         public Dictionary<string, IState> GetStates()
         {
             return States;
