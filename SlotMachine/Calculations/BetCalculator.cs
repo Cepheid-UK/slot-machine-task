@@ -1,13 +1,12 @@
 ﻿using System.Collections.Generic;
 using SlotMachine.Slots;
-using System;
-using System.Linq;
+using SlotMachine.Ports;
 
 namespace SlotMachine.Calculations
 {
     class BetCalculator
     {
-        public static decimal CalculateWinnings(ESymbol[,] slots, Game game)
+        public static decimal CalculateWinnings(ESymbol[,] slots, IWallet wallet, ISlotsGenerator slotsGenerator)
         {
             var cols = slots.GetLength(0);
             var rows = slots.GetLength(1);
@@ -23,15 +22,15 @@ namespace SlotMachine.Calculations
                     symbolRow.Add(slots[i, j]);
                 }
 
-                totalWinningsCoefficient += GetCoefficientForRow(symbolRow, game);
+                totalWinningsCoefficient += GetCoefficientForRow(symbolRow, slotsGenerator);
             }
 
-            return totalWinningsCoefficient * game.wallet.GetStake();
+            return totalWinningsCoefficient * wallet.GetStake();
         }
 
-        public static decimal GetCoefficientForRow(List<ESymbol> symbolRow, Game game)
+        public static decimal GetCoefficientForRow(List<ESymbol> symbolRow, ISlotsGenerator slotsGenerator)
         {
-            var dictionary = game.slotsGenerator.GetSymbolsDictionary();
+            var dictionary = slotsGenerator.GetSymbolsDictionary();
 
             // remove all wildcards from the list (wildcards have no coefficient)
             // check if all symbols are the same

@@ -1,13 +1,34 @@
-﻿using System;
+using Microsoft.Extensions.DependencyInjection;
+using SlotMachine.Ports;
 using SlotMachine.StateMachine;
+using SlotMachine.Calculations;
+using SlotMachine.Slots;
 
 namespace SlotMachine
 {
-    class Program
+    public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            new Game();
-        }
+            /*var slotsGenerator = new SlotsGenerator(3, 4);
+            var wallet = new Wallet();
+            var finiteStateMachine = new FiniteStateMachine(wallet, slotsGenerator);
+
+            var serviceProvider = new ServiceCollection();
+            serviceProvider.AddSingleton(slotsGenerator);
+            serviceProvider.AddSingleton(wallet);
+            serviceProvider.AddSingleton(finiteStateMachine);
+            serviceProvider.BuildServiceProvider();*/
+
+            var serviceProvider = new ServiceCollection()
+                .AddSingleton<ISlotsGenerator, SlotsGenerator>()
+                .AddSingleton<IWallet, Wallet>()
+                .AddSingleton<IFiniteStateMachine, FiniteStateMachine>()
+                .AddSingleton<IGame, Game>()
+                .BuildServiceProvider();
+
+            serviceProvider.GetService<IGame>()
+                .StartGame();
+        }     
     }
 }

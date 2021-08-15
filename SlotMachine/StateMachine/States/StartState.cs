@@ -1,15 +1,21 @@
 ﻿using System;
+using SlotMachine.Ports;
 
 namespace SlotMachine.StateMachine
 {
     public class StartState : IState
     {
         // Default starting state - prompts the user to input a Balance and validates
-        public StartState(Game activeGame)
+        public StartState(
+            IFiniteStateMachine finiteStateMachine,
+            IWallet wallet)
         {
-            game = activeGame;
+            _finiteStateMachine = finiteStateMachine;
+            _wallet = wallet;
+
         }
-        public Game game;
+        private readonly IFiniteStateMachine _finiteStateMachine;
+        private readonly IWallet _wallet;
 
         public void ExecuteState()
         {
@@ -20,13 +26,13 @@ namespace SlotMachine.StateMachine
 
             if (isANumber && money > 0)
             {
-                game.wallet.DepositMoney(money);
-                game.fsm.SetState("Stake");
+                _wallet.DepositMoney(money);
+                _finiteStateMachine.ChangeState("Stake");
             }
             else
             {
                 Console.WriteLine("Not an acceptable input, please enter a number\r\n");
-                game.fsm.SetState("start");
+                _finiteStateMachine.ChangeState("start");
             }
         }
     }

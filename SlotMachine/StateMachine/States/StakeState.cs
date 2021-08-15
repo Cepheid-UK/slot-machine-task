@@ -1,15 +1,22 @@
 ﻿using System;
+using SlotMachine.Ports;
 
 namespace SlotMachine.StateMachine
 {
     public class StakeState : IState
     {
         // Handles the Stake input and validation
-        public StakeState(Game activeGame)
+        public StakeState(
+            IFiniteStateMachine finiteStateMachine,
+            IWallet wallet)
         {
-            game = activeGame;
+            _finiteStateMachine = finiteStateMachine;
+            _wallet = wallet;
+
         }
-        public Game game;
+        private readonly IFiniteStateMachine _finiteStateMachine;
+        private readonly IWallet _wallet;
+
         public void ExecuteState()
         {
             Console.WriteLine("\r\nEnter Stake Amount:");
@@ -19,25 +26,25 @@ namespace SlotMachine.StateMachine
 
             if (isANumber)
             {
-                if (stake > 0 && game.wallet.CanAffordBet(stake))
+                if (stake > 0 && _wallet.CanAffordBet(stake))
                 {
                     Console.WriteLine("Stake: {0}",stake);
                     // player has entered a valid Stake
-                    game.wallet.StakeMoney(stake);
-                    game.fsm.SetState("play");
+                    _wallet.StakeMoney(stake);
+                    _finiteStateMachine.ChangeState("play");
                 }
                 else
                 {
                     // player tried to Stake too much
                     Console.WriteLine("\r\nInsufficient Balance");
-                    game.fsm.SetState("Stake");                
+                    _finiteStateMachine.ChangeState("Stake");                
                 }
             }
             else
             {
                 // player entered a character that cannot be parsed as a decimal
                 Console.WriteLine("\r\nNot an acceptable input, please enter a number");
-                game.fsm.SetState("Stake");
+                _finiteStateMachine.ChangeState("Stake");
             }
         }
     }

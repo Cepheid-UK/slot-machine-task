@@ -1,41 +1,57 @@
 ﻿using System.Collections.Generic;
+using SlotMachine.Ports;
 
 namespace SlotMachine.StateMachine
 {
-    public class FiniteStateMachine
+    // Handles the definition and changing of state
+    public class FiniteStateMachine : IFiniteStateMachine  
     {
-        // Handles the definition and changing of state
-        public FiniteStateMachine(Game game)
-        {
-            states = new Dictionary<string, IState>();
+        private IWallet _wallet { get; set; }
+        private ISlotsGenerator _slotsGenerator { get; set; }
 
-            AddState("start", new StartState(game));
-            AddState("Stake", new StakeState(game));
-            AddState("play", new PlayState(game));
-            AddState("lost", new LoseState(game));
+        public FiniteStateMachine(
+            IWallet wallet,
+            ISlotsGenerator slotsGenerator) 
+        {
+            States = new Dictionary<string, IState>();
+
+            _wallet = wallet;
+            _slotsGenerator = slotsGenerator;
+
+            AddState("start", new StartState(this, _wallet));
+            AddState("Stake", new StakeState(this, _wallet));
+            AddState("play", new PlayState(this, _wallet, _slotsGenerator));
+            AddState("lost", new LoseState(this));
         }
 
-        protected Dictionary<string, IState> states { get; set; }
-        protected IState currentState { get; set; }
-
-        public void SetState(string stateKey)
-        {
-            if (states.ContainsKey(stateKey))
-            {
-                currentState = states[stateKey];
-                currentState.ExecuteState();
-            }
-
-        }
+        protected Dictionary<string, IState> States { get; set; }
+        protected IState CurrentState { get; set; }
 
         public void AddState(string key, IState state)
         {
-            states.Add(key, state);
+            States.Add(key, state);
+        }
+
+        public void ChangeState(string stateKey)
+        {
+            if (States.ContainsKey(stateKey))
+            {
+                CurrentState = States[stateKey];
+                CurrentState.ExecuteState();
+            }
+        }
+
+        public void RunStateMachine()
+        {
+            while(true)
+            {
+
+            }
         }
 
         public Dictionary<string, IState> GetStates()
         {
-            return states;
+            return States;
         }
     }
 }

@@ -1,16 +1,16 @@
 ﻿using System;
+using SlotMachine.Ports;
 
 namespace SlotMachine.Calculations
 {
-    public class Wallet
+    public class Wallet : IWallet
     {
         public Wallet()
         {
             Stake = 0;
         }
-
-        private decimal Balance { get; set; }
-        private decimal Stake { get; set; }
+        protected decimal Balance { get; set; }
+        protected decimal Stake { get; set; }
         
         public bool CanAffordBet(decimal bet)
         {
@@ -48,11 +48,13 @@ namespace SlotMachine.Calculations
 
         public void BetResult(decimal result)
         {
-            if (result > 0)
+            var BetResult = decimal.Round(result, 2);
+            
+            if (BetResult > 0)
             {
-                Console.WriteLine("\r\nYou have won: {0}", result);
+                Console.WriteLine("\r\nYou have won: {0}", BetResult);
             }
-            Balance += result;
+            Balance += decimal.Round(result,2);
             Stake = 0;
         }
 

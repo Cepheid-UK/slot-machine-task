@@ -1,21 +1,23 @@
 ﻿using SlotMachine.StateMachine;
 using SlotMachine.Slots;
 using SlotMachine.Calculations;
+using SlotMachine.Ports;
 
 namespace SlotMachine
 {
-    public class Game
+    public class Game : IGame
     {
-        public Game()
+        private readonly ISlotsGenerator _slotsGenerator;
+        private readonly IWallet _wallet;
+        private readonly IFiniteStateMachine _finiteStateMachine;
+        public Game(IFiniteStateMachine finiteStateMachine)
         {
-            slotsGenerator = new SlotsGenerator(3, 4);
-            wallet = new Wallet();
-            fsm = new FiniteStateMachine(this);
-            fsm.SetState("start");
+            _finiteStateMachine = finiteStateMachine;
         }
 
-        public FiniteStateMachine fsm { get; set; }
-        public Wallet wallet { get; set; }
-        public SlotsGenerator slotsGenerator { get; set; }
+        public void StartGame()
+        {
+            _finiteStateMachine.ChangeState("start");
+        }
     }
 }
