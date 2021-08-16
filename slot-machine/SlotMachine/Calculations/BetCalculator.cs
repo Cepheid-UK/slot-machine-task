@@ -1,11 +1,14 @@
 ﻿using System.Collections.Generic;
-using System;
 using SlotMachine.Slots;
 
 namespace SlotMachine.Calculations
 {
     class BetCalculator
     {
+        protected BetCalculator()
+        {
+        }
+
         public static decimal CalculateWinnings(Symbol[,] slots, decimal stake)
         {
             var rows = slots.GetLength(0);
