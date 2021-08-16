@@ -1,4 +1,6 @@
 using NUnit.Framework;
+using System.Collections.Generic;
+using System;
 using SlotMachine;
 using SlotMachine.Slots;
 using SlotMachine.Calculations;
@@ -9,6 +11,9 @@ namespace SlotMachineTests
     public class BetCalculatorTests
     {
         Symbol[,] slots { get; set; }
+        Symbol A { get; set; }
+        Symbol B { get; set; }
+        Symbol C { get; set; }
 
         [SetUp]
         public void Setup()
@@ -34,25 +39,94 @@ namespace SlotMachineTests
             symbolParams3.ChanceToAppear = 0.65m;
             symbolParams3.Wildcard = false;
 
-            Symbol A = new(symbolParams);
-            Symbol B = new(symbolParams2);
-            Symbol C = new(symbolParams3);
+            A = new(symbolParams);
+            B = new(symbolParams2);
+            C = new(symbolParams3);
 
             slots = new Symbol[,] {
-                { A, A, A}, // match
-                { B, B, B }, // match (all wildcards)
-                { C, C, C }, // match with different coefficients
-                { A, B, A },  // match with wildcard
+                { A, A, A}, // match (2.4)
+                { B, B, B }, // match (all wildcards) (0.3)
+                { C, C, C }, // match with different coefficients to A (0.6)
+                { A, B, A },  // match with wildcard (1.7)
                 { A, A, C }, // no-match
                 { A, B, C }, // no-match with wildcard
             };
         }
 
         [Test]
-        public void CalculatesRowCoefficientCorrectly()
+        public void MatchingRowCoefficientCalculatedCorrectly()
         {
-            // todo - make BetCalculator a service?
+            List<Symbol> list = new();
+            list.Add(A);
+            list.Add(A);
+            list.Add(A);
+
+            var result = BetCalculator.GetCoefficientForRow(list);
+
+            if (result != 2.4m)
+            {
+                Assert.Fail();
+            }
         }
-        
+
+        [Test]
+        public void MatchingRowWithWildcardsCoefficientCalculatedCorrectly()
+        {
+            List<Symbol> list = new();
+            list.Add(A);
+            list.Add(B);
+            list.Add(A);
+
+            var result = BetCalculator.GetCoefficientForRow(list);
+
+            if (result != 1.7m)
+            {
+                Assert.Fail();
+            }
+        }
+
+        [Test]
+        public void LosingRowCoefficientCalculatedCorrectly()
+        {
+            List<Symbol> list = new();
+            list.Add(A);
+            list.Add(A);
+            list.Add(C);
+
+            var result = BetCalculator.GetCoefficientForRow(list);
+
+            if (result != 0m)
+            {
+                Assert.Fail();
+            }
+        }
+
+        [Test]
+        public void LosingRowWithWildcardsCoefficientCalculatedCorrectly()
+        {
+            List<Symbol> list = new();
+            list.Add(A);
+            list.Add(B);
+            list.Add(C);
+
+            var result = BetCalculator.GetCoefficientForRow(list);
+
+            if (result != 0m)
+            {
+                Assert.Fail();
+            }
+        }
+
+        [Test]
+        public void CalculateEntireSlotWinnings()
+        {
+            var result = BetCalculator.CalculateWinnings(slots, 1);
+            
+            if (result != 5m)
+            {
+                Assert.Fail();
+            }
+        }
+
     }
 }

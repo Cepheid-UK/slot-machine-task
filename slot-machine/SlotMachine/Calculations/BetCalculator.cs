@@ -3,7 +3,7 @@ using SlotMachine.Slots;
 
 namespace SlotMachine.Calculations
 {
-    class BetCalculator
+    public class BetCalculator
     {
         protected BetCalculator()
         {
