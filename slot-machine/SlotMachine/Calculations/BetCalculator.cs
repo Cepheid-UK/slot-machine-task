@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System;
 using SlotMachine.Slots;
 
 namespace SlotMachine.Calculations
@@ -7,16 +8,16 @@ namespace SlotMachine.Calculations
     {
         public static decimal CalculateWinnings(Symbol[,] slots, decimal stake)
         {
-            var cols = slots.GetLength(0);
-            var rows = slots.GetLength(1);
+            var rows = slots.GetLength(0);
+            var cols = slots.GetLength(1);
 
             decimal totalWinningsCoefficient = 0;
 
-            for (var i=0; i<cols; i++)
+            for (var i=0; i<rows; i++)
             {
                 var symbolRow = new List<Symbol>();
 
-                for (var j=0; j<rows; j++)
+                for (var j=0; j<cols; j++)
                 {
                     symbolRow.Add(slots[i, j]);
                 }
@@ -29,31 +30,31 @@ namespace SlotMachine.Calculations
 
         public static decimal GetCoefficientForRow(List<Symbol> symbolRow)
         {
-            var listWithoutWildcards = new List<Symbol>();
+            decimal rowCoefficient = 0;
+            Symbol winningSymbol = null;
+
             foreach (var symbol in symbolRow)
             {
-                // this implementation assumes wildcards always have a coefficient of 0
-                if (!symbol.IsWildcard())
+                if (symbol.IsWildcard())
                 {
-                    listWithoutWildcards.Add(symbol);
+                    continue;
                 }
+                winningSymbol = symbol;
+                break;
             }
-
-            if (listWithoutWildcards.Count == 0) { return 0m; } // all wildcards
-
-            int consecutiveSymbols = 0;
-            Symbol winningSymbol = listWithoutWildcards[0];
-
-            for (var i=0; i<= listWithoutWildcards.Count-1; i++)
+            
+            foreach (var symbol in symbolRow)
             {
-                if (listWithoutWildcards[i] != winningSymbol)
+                if (symbol.IsWildcard() || symbol == winningSymbol)
                 {
-                    return 0m; // symbol doesnt match the first, so we can discard
+                    rowCoefficient += symbol.Coefficient;
                 }
-                consecutiveSymbols++;
+                else
+                {
+                    return 0m;
+                }
             }
-
-            return listWithoutWildcards.Count * winningSymbol.Coefficient;
+            return rowCoefficient;
         }
     }
 }

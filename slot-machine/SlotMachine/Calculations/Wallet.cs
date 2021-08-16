@@ -57,7 +57,7 @@ namespace SlotMachine.Calculations
         {
             var BetResult = decimal.Round(result, 2);
 
-            if (result < 0 || result < Stake) return;
+            if (result < 0 && result < Stake) return;
             
             if (BetResult > 0)
             {
