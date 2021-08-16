@@ -14,6 +14,6 @@
 
         public void BetResult(decimal result);
 
-        public void DisplayBalance();
+        public decimal DisplayBalance();
     }
 }

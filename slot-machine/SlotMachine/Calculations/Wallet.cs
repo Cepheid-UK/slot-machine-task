@@ -32,13 +32,20 @@ namespace SlotMachine.Calculations
 
         public void DepositMoney(decimal money)
         {
-            Balance += decimal.Round(money,2);
+            if (money > 0 || (Balance + money) > 0)
+            {
+                Balance += decimal.Round(money, 2);
+            }
         }
 
         public void StakeMoney(decimal stake)
         {
-            Stake = decimal.Round(stake,2);
-            Balance -= Stake;
+            if (stake > 0 && stake <= Balance)
+            {
+                Stake = decimal.Round(stake, 2);
+                Balance -= Stake;
+            }
+            
         }
 
         public decimal GetStake()
@@ -49,6 +56,8 @@ namespace SlotMachine.Calculations
         public void BetResult(decimal result)
         {
             var BetResult = decimal.Round(result, 2);
+
+            if (result < 0 || result < Stake) return;
             
             if (BetResult > 0)
             {
@@ -58,9 +67,10 @@ namespace SlotMachine.Calculations
             Stake = 0;
         }
 
-        public void DisplayBalance()
+        public decimal DisplayBalance()
         {
             Console.WriteLine("Current balance is: {0}", Balance.ToString());
+            return Balance;
         }
     }
 }

@@ -1,12 +1,11 @@
 ﻿using System.Collections.Generic;
 using SlotMachine.Slots;
-using SlotMachine.Ports;
 
 namespace SlotMachine.Calculations
 {
     class BetCalculator
     {
-        public static decimal CalculateWinnings(ESymbol[,] slots, IWallet wallet, ISlotsGenerator slotsGenerator)
+        public static decimal CalculateWinnings(Symbol[,] slots, decimal stake)
         {
             var cols = slots.GetLength(0);
             var rows = slots.GetLength(1);
@@ -15,34 +14,26 @@ namespace SlotMachine.Calculations
 
             for (var i=0; i<cols; i++)
             {
-                var symbolRow = new List<ESymbol>();
+                var symbolRow = new List<Symbol>();
 
                 for (var j=0; j<rows; j++)
                 {
                     symbolRow.Add(slots[i, j]);
                 }
 
-                totalWinningsCoefficient += GetCoefficientForRow(symbolRow, slotsGenerator);
+                totalWinningsCoefficient += GetCoefficientForRow(symbolRow);
             }
 
-            return totalWinningsCoefficient * wallet.GetStake();
+            return totalWinningsCoefficient * stake;
         }
 
-        public static decimal GetCoefficientForRow(List<ESymbol> symbolRow, ISlotsGenerator slotsGenerator)
+        public static decimal GetCoefficientForRow(List<Symbol> symbolRow)
         {
-            var dictionary = slotsGenerator.GetSymbolsDictionary();
-
-            // remove all wildcards from the list (wildcards have no coefficient)
-            // check if all symbols are the same
-            // if true - multiply coefficients by number of symbols
-            // if false - return 0
-
-            var listWithoutWildcards = new List<ESymbol>();
-
+            var listWithoutWildcards = new List<Symbol>();
             foreach (var symbol in symbolRow)
             {
-                // remove all wildcards
-                if (!dictionary[symbol].IsWildcard())
+                // this implementation assumes wildcards always have a coefficient of 0
+                if (!symbol.IsWildcard())
                 {
                     listWithoutWildcards.Add(symbol);
                 }
@@ -51,19 +42,18 @@ namespace SlotMachine.Calculations
             if (listWithoutWildcards.Count == 0) { return 0m; } // all wildcards
 
             int consecutiveSymbols = 0;
-            ESymbol winningSymbol = listWithoutWildcards[0];
+            Symbol winningSymbol = listWithoutWildcards[0];
 
             for (var i=0; i<= listWithoutWildcards.Count-1; i++)
             {
                 if (listWithoutWildcards[i] != winningSymbol)
                 {
-                    // symbol doesnt match the first
-                    return 0m;
+                    return 0m; // symbol doesnt match the first, so we can discard
                 }
                 consecutiveSymbols++;
             }
 
-            return listWithoutWildcards.Count * dictionary[winningSymbol].Coefficient;
+            return listWithoutWildcards.Count * winningSymbol.Coefficient;
         }
     }
 }

@@ -6,10 +6,14 @@ namespace SlotMachineTests.TestImplementations
     {
         public StateTest()
         {
+            executed = false;
         }
+
+        public bool executed;
 
         public void ExecuteState()
         {
+            executed = true;
         }
     }
 }

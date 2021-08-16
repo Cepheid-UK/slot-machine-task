@@ -5,14 +5,13 @@ namespace SlotMachine.Ports
 {
     public interface ISlotsGenerator
     {
-        public ESymbol[,] SlotsMatrix { get; set; }
+        public Symbol[,] SlotsMatrix { get; set; }
         public List<int> SlotDimensions { get; set; }
-        public int MatchesRequired { get; set; }
-        public SymbolsDictionary SlotSymbols { get; set; }
+        public SymbolsList SlotSymbols { get; set; }
 
-        ESymbol GenerateRandomSymbol();
-        ESymbol[,] GenerateSlots();
-        string GetSymbolName(ESymbol symbol);
-        Dictionary<ESymbol, Symbol> GetSymbolsDictionary();
+        Symbol GenerateRandomSymbol();
+        Symbol[,] GenerateSlots();
+        string GetSymbolName(Symbol symbol);
+        List<Symbol> GetSymbolsList();
     }
 }

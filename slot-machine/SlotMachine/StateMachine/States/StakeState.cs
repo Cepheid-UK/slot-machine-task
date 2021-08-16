@@ -28,7 +28,6 @@ namespace SlotMachine.StateMachine
             {
                 if (stake > 0 && _wallet.CanAffordBet(stake))
                 {
-                    Console.WriteLine("Stake: {0}",stake);
                     // player has entered a valid Stake
                     _wallet.StakeMoney(stake);
                     _finiteStateMachine.ChangeState("play");

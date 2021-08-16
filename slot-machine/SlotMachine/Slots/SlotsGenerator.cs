@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 using SlotMachine.Ports;
 
@@ -6,40 +7,48 @@ namespace SlotMachine.Slots
 {
     public class SlotsGenerator : ISlotsGenerator
     {
-        public SlotsGenerator()
+        public SlotsGenerator(AppSettings settings, SymbolData symbolData)
         {
-            int cols = 3;
-            int rows = 4;
-            SlotDimensions = new List<int>(); SlotDimensions.Add(rows); SlotDimensions.Add(cols);
-            SlotsMatrix = new ESymbol[rows, cols];
-            MatchesRequired = cols; // supports any number of columns
+            SlotDimensions = new List<int>(); 
+            SlotDimensions.Add(settings.SlotRows); 
+            SlotDimensions.Add(settings.SlotCols);
 
-            SlotSymbols = new SymbolsDictionary();
+            SlotsMatrix = new Symbol[settings.SlotRows, settings.SlotCols];
+
+            SlotSymbols = new SymbolsList(symbolData);
         }
 
-        public ESymbol[,] SlotsMatrix { get; set; }
+        public Symbol[,] SlotsMatrix { get; set; }
         public List<int> SlotDimensions { get; set; }
-        public int MatchesRequired { get; set; }
-        public SymbolsDictionary SlotSymbols { get; set; }
+        public SymbolsList SlotSymbols { get; set; }
 
-        public ESymbol GenerateRandomSymbol()
+        public Symbol GenerateRandomSymbol()
         {
-            double randomNumber = new Random().NextDouble();
+            decimal randomNumber = new decimal(new Random().NextDouble());
+            List<Symbol> SortedList = SlotSymbols.GetList().OrderBy(o => o.ChanceToAppear).ToList();
+            List<decimal> cumulators = new List<decimal>();
+            decimal cumulator = 0;
 
-            // change this to refer to a config file
-            return randomNumber switch
+            for (var i=0; i< SortedList.Count; i++)
             {
-                <= 0.05 => ESymbol.Wildcard,
-                < 0.2 => ESymbol.Pineapple,
-                < 0.55 => ESymbol.Banana,
-                _ => ESymbol.Apple,
-            };
+                cumulator += SortedList[i].ChanceToAppear;
+                cumulators.Add(cumulator);
+                if (randomNumber < cumulators[i])
+                {
+                    return SortedList[i];
+                }
+            }
+
+            return SortedList.Last();
         }
 
-        public ESymbol[,] GenerateSlots()
+        public Symbol[,] GenerateSlots()
         {
-            // Generates the symbols on the slots and prints the lines
-            // Supports any sized 2D slot machine
+            /* In a more long-lived application, I would separate the output into an abstracted "IUserOuput" interface
+            I'd use a console implementation of that interface, and call that in the relevant state
+            this would permit the game to be output to a log, or a db, or a webpage, etc.
+            For simplicity, I've mixed the outputting of text to console into the logic of generating the slots */
+
             Console.WriteLine("\r\n");
 
             for(var i=0; i<SlotDimensions[0]; i++)
@@ -55,14 +64,14 @@ namespace SlotMachine.Slots
             return SlotsMatrix;
         }
 
-        public string GetSymbolName(ESymbol symbol)
+        public string GetSymbolName(Symbol symbol)
         {
-            return SlotSymbols.Dictionary[symbol].Name;
+            return SlotSymbols.GetList().Find(s => s.Name == symbol.Name).Name;
         }
 
-        public Dictionary<ESymbol, Symbol> GetSymbolsDictionary()
+        public List<Symbol> GetSymbolsList()
         {
-            return SlotSymbols.Dictionary;
+            return SlotSymbols.GetList();
         }
     }
 }

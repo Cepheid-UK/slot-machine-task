@@ -24,6 +24,12 @@ namespace SlotMachine.StateMachine
 
             bool isANumber = decimal.TryParse(response, out decimal money);
 
+            /* If this was a more long-lived application, I would use an abstracted "IUserInput" interface
+            implementing as a console input, this would permit inputting from various sources,
+            e.g. console input, http request, db values, config files etc.
+            I'd also write additional tests against those interfaces + implementations to validate
+            For simplicity, I've wrote the validation into the state */
+
             if (isANumber && money > 0)
             {
                 _wallet.DepositMoney(money);
