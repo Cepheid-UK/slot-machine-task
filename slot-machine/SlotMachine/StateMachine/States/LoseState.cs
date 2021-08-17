@@ -6,7 +6,7 @@ namespace SlotMachine.StateMachine
     public class LoseState : IState
     {
         private readonly IFiniteStateMachine _finiteStateMachine;
-        // Game is lost, informs the user then restarts the game
+        // Game is lost, informs the player
         public LoseState(
             IFiniteStateMachine finiteStateMachine)
         {
@@ -16,7 +16,8 @@ namespace SlotMachine.StateMachine
         public void ExecuteState()
         {
             Console.WriteLine("No Balance remaining\r\n");
-            _finiteStateMachine.ChangeState("start");
+            // Uncomment the next line if you want the game to restart when it ends
+            //_finiteStateMachine.ChangeState("start");
         }
     }
 }
