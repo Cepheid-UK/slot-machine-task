@@ -5,10 +5,6 @@ namespace SlotMachine.Calculations
 {
     public class BetCalculator
     {
-        protected BetCalculator()
-        {
-        }
-
         public static decimal CalculateWinnings(Symbol[,] slots, decimal stake)
         {
             var rows = slots.GetLength(0);
@@ -27,7 +23,6 @@ namespace SlotMachine.Calculations
 
                 totalWinningsCoefficient += GetCoefficientForRow(symbolRow);
             }
-
             return totalWinningsCoefficient * stake;
         }
 

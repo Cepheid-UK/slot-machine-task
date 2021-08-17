@@ -1,6 +1,5 @@
 using NUnit.Framework;
 using System.Collections.Generic;
-using System;
 using SlotMachine;
 using SlotMachine.Slots;
 using SlotMachine.Calculations;

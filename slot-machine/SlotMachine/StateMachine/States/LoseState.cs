@@ -15,7 +15,7 @@ namespace SlotMachine.StateMachine
         public Game game;
         public void ExecuteState()
         {
-            Console.WriteLine("No Balance remaining");
+            Console.WriteLine("No Balance remaining\r\n");
             _finiteStateMachine.ChangeState("start");
         }
     }

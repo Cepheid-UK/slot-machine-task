@@ -1,8 +1,6 @@
 using NUnit.Framework;
 using SlotMachine;
 using SlotMachine.Slots;
-using SlotMachine.Calculations;
-using System;
 
 namespace SlotMachineTests
 {

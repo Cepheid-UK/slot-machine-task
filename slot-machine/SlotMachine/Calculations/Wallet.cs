@@ -45,7 +45,6 @@ namespace SlotMachine.Calculations
                 Stake = decimal.Round(stake, 2);
                 Balance -= Stake;
             }
-            
         }
 
         public decimal GetStake()
@@ -56,7 +55,6 @@ namespace SlotMachine.Calculations
         public void BetResult(decimal result)
         {
             var BetResult = decimal.Round(result, 2);
-
             if (result < 0 && result < Stake) return;
             
             if (BetResult > 0)
